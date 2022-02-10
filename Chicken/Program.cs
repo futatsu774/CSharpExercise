@@ -8,23 +8,41 @@ namespace Chicken
     }
 
     // Should implement IBird
-    public class Chicken
+    public class Chicken : IBird
     {
         public Chicken()
         {
+            Console.WriteLine("A Chicken exists.");
+        }
+
+        public Egg Lay()
+        {
+            return new Egg(new Func<Chicken>(() => new Chicken()));
         }
     }
 
     public class Egg
     {
+        bool born = false;
+        Func<IBird> create;
+
         public Egg(Func<IBird> createBird)
         {
-            throw new NotImplementedException("Waiting to be implemented.");
+            create = createBird;
         }
 
         public IBird Hatch()
         {
-            throw new NotImplementedException("Waiting to be implemented.");
+            if (!born)
+            {
+                Console.WriteLine("Egg has been hatched!");
+                born = true;
+                return create();
+            }
+            else
+            {
+                throw new InvalidOperationException("Egg already hatched");
+            }
         }
     }
 
@@ -32,9 +50,10 @@ namespace Chicken
     {
         public static void Main(string[] args)
         {
-            //      var chicken1 = new Chicken();
-            //      var egg = chicken1.Lay();
-            //      var childChicken = egg.Hatch();
+            var chicken1 = new Chicken();
+            var egg = chicken1.Lay();
+            egg.Hatch();
+            
         }
     }
 }
